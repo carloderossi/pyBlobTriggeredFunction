@@ -5,6 +5,15 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 app = func.FunctionApp()
 
+""" 
+Prerequisites: 
+- a Storage account with 2 Blob containers: 'certin' and 'certout'
+- a FunctionApp (consumption servless model)
+- an application setting in the function app called 'connettimi' that contains the connection string to the storage account
+- from the portal upload a file in "certin" container (wait 10 secs) and it will be copied to "certout"
+"""
+
+# from the 'myblob.name' passed in the event extract container_name, blob_name
 def get_names(name:str):
     container_name= name.split('/')[0]
     blob_name = name.split('/')[1]
@@ -18,6 +27,7 @@ def blob_trigger(myblob: func.InputStream):
     destination_container_name = 'certout'
     stg_acc_url = None
     try:
+        # print some blah blah blah
         logging.info(f"Python blob trigger function processed blob:"
                 f"\n\tName: {myblob.name}"
                 f"\n\tBlob Size: {myblob.length} bytes")
@@ -26,6 +36,7 @@ def blob_trigger(myblob: func.InputStream):
         logging.info(f"\n\tblob_name: {blob_name}")
         logging.info(f"\n\tcontainer_name: {container_name}")
         myblob.close()
+        # get the original storage account name
         stg_acc_url = str(myblob.uri).split('.')[0]
     except Exception as e: 
         logging.exception(f"Blob trigger function failed: {e}")
